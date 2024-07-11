@@ -1,13 +1,14 @@
 import { X } from "lucide-react";
 import { Button } from "../../../components/button";
 import { DayPicker } from "react-day-picker";
-import "react-day-picker/dist/style.css";
 import { DatePickerModalProps } from "../../../interfaces/modals-interface";
+import { ptBR } from "date-fns/locale";
 
 export function DatePickerModal({
   closeDatePickerModal,
   eventDateRange,
   setEventDateRange,
+  submitDate,
 }: DatePickerModalProps) {
   return (
     // Modal date range picker
@@ -16,7 +17,9 @@ export function DatePickerModal({
         {/* Título e subtítulo */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Selecione uma data</h2>
+            <h2 className="text-lg font-semibold text-sky-300">
+              Selecione uma data
+            </h2>
             <button type="button" onClick={closeDatePickerModal}>
               <X className="size-5 text-zinc-400" />
             </button>
@@ -27,7 +30,15 @@ export function DatePickerModal({
           mode="range"
           selected={eventDateRange}
           onSelect={setEventDateRange}
+          captionLayout="dropdown-buttons"
+          fromYear={2000}
+          toYear={3000}
+          locale={ptBR}
+          className="text-sky-300"
         />
+        <Button variant="primary" size="full" onClick={submitDate}>
+          Confirmar
+        </Button>
       </div>
     </div>
   );

@@ -4,6 +4,23 @@ import { useState } from "react";
 import { DatePickerModal } from "../modals/date-picker-modal";
 import { format } from "date-fns";
 import { PlaceDateFormProps } from "../../../interfaces/create-trip-interface";
+import Select, { SingleValue } from "react-select";
+
+const cities = [
+  { value: "Goiânia - GO", label: "Goiânia - GO", color: "#a1a1aaa" },
+  { value: "São Paulo - SP", label: "São Paulo - SP", color: "#a1a1aaa" },
+  {
+    value: "Rio de Janeiro - RJ",
+    label: "Rio de Janeiro - RJ",
+    color: "#a1a1aaa",
+  },
+];
+
+type OptionType = {
+  label: string;
+  value: string;
+  color: string;
+};
 
 export function PlaceDateForm({
   isGuestsInputOpen,
@@ -21,7 +38,16 @@ export function PlaceDateForm({
   }
 
   function closeDatePickerModal() {
+    setEventDateRange(undefined);
     return setIsDatePickerOpen(false);
+  }
+
+  function submitDate() {
+    return setIsDatePickerOpen(false);
+  }
+
+  function changeDestination(e: SingleValue<OptionType>) {
+    return e ? setDestination(e.value) : null;
   }
 
   const displayedDate =
@@ -30,6 +56,40 @@ export function PlaceDateForm({
           .concat(" até ")
           .concat(format(eventDateRange.to, "d' de 'LLL"))
       : null;
+
+  const NoOptionsMessage = () => {
+    return <p>Sem resultado</p>;
+  };
+
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      background: "transparent",
+      display: "flex",
+      flexWrap: "nowrap",
+      border: 0,
+      boxShadow: 0,
+      cursor: "text",
+      caretColor: "#a1a1aa",
+      color: "#a1a1aa",
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      background: "black",
+      color: "white",
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      fontWeight: state.isSelected ? "bold" : "normal",
+      color: "white",
+      backgroundColor: state.isFocused ? "grey" : state.data.color,
+    }),
+    singleValue: (provided: any, state: any) => ({
+      ...provided,
+      color: state.data.color,
+      marginLeft: 0,
+    }),
+  };
 
   // useEffect(() => {
   //   async function fetchData() {
@@ -68,35 +128,54 @@ export function PlaceDateForm({
   return (
     <div className="h-16 bg-zinc-900 px-4 rounded-xl flex items-center shadow-shape gap-3">
       {/* input para informar destino */}
-      <div className="flex items-center gap-2 flex-1">
+      <form className="flex items-center gap-2 flex-1">
         <MapPin className="size-5 text-zinc-400" />
-        <input
+        {/* <input
           className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1"
           type="text"
           name="place"
           placeholder="Para onde você vai?"
           disabled={isGuestsInputOpen}
           onChange={(event) => setDestination(event.target.value)}
+          required={true}
+        /> */}
+        <Select
+          required={true}
+          onChange={changeDestination}
+          className="text-lg placeholder-zinc-400 flex-1 m-0 text-left"
+          options={cities}
+          isSearchable
+          isClearable
+          openMenuOnClick={false}
+          placeholder={"Para onde você vai?"}
+          components={{
+            DropdownIndicator: () => null,
+            ClearIndicator: () => null,
+          }}
+          styles={customStyles}
+          noOptionsMessage={NoOptionsMessage}
+          isDisabled={isGuestsInputOpen}
         />
-      </div>
+        <button
+          type="button"
+          onClick={openDatePickerModal}
+          disabled={isGuestsInputOpen}
+          className="flex items-center gap-2 outline-none text-left w-[220px]"
+        >
+          <Calendar className="size-5 text-zinc-400" />
+          <span className="text-l text-zinc-400 w-48 flex-1">
+            {displayedDate || "Quando?"}
+          </span>
+        </button>
+      </form>
 
       {/* modal para selecionar data */}
-      <button
-        onClick={openDatePickerModal}
-        disabled={isGuestsInputOpen}
-        className="flex items-center gap-2 outline-none text-left w-[240px]"
-      >
-        <Calendar className="size-5 text-zinc-400" />
-        <span className="text-lg text-zinc-400 w-48 flex-1">
-          {displayedDate || "Quando?"}
-        </span>
-      </button>
-
       {isDatePickerOpen && (
         <DatePickerModal
           closeDatePickerModal={closeDatePickerModal}
           eventDateRange={eventDateRange}
           setEventDateRange={setEventDateRange}
+          submitDate={submitDate}
         />
       )}
 

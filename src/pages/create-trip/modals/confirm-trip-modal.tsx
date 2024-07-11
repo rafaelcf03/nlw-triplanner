@@ -1,13 +1,24 @@
 import { MailIcon, User, X } from "lucide-react";
 import { Button } from "../../../components/button";
 import { ConfirmTripModalProps } from "../../../interfaces/modals-interface";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export function ConfirmTripModal({
   closeConfirmModal,
   createTrip,
   setOwnerData,
   ownerData,
+  destination,
+  eventDateRange,
 }: ConfirmTripModalProps) {
+  const displayedDate =
+    eventDateRange && eventDateRange.from && eventDateRange.to
+      ? format(eventDateRange.from, "d' de 'LLLL", { locale: ptBR })
+          .concat(" até ")
+          .concat(format(eventDateRange.to, "d' de 'LLLL", { locale: ptBR }))
+      : null;
+
   return (
     // Modal de confirmação
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
@@ -24,11 +35,9 @@ export function ConfirmTripModal({
           </div>
           <p className="text-sm text-zinc-400">
             Para concluir a criação da viagem para{" "}
-            <span className="text-zinc-100 font-semibold">Goiânia, Brasil</span>{" "}
+            <span className="text-zinc-100 font-semibold">{destination}</span>{" "}
             nas datas de{" "}
-            <span className="text-zinc-100 font-semibold">
-              12 de dezembro a 12 de janeiro
-            </span>{" "}
+            <span className="text-zinc-100 font-semibold">{displayedDate}</span>{" "}
             preencha seus dados abaixo:
           </p>
         </div>

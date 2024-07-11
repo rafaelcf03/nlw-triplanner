@@ -16,13 +16,16 @@ export function CreateTrip() {
   const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const [destination, setDestination] = useState("");
+  const [destination, setDestination] = useState<string>();
   const [ownerData, setOwnerData] = useState({ name: "", email: "" });
   const [eventDateRange, setEventDateRange] = useState<DateRange | undefined>();
 
-  const [emailsToInvite, setEmailsToInvite] = useState([""]);
+  const [emailsToInvite, setEmailsToInvite] = useState<string[]>([]);
 
   function openGuestsInput() {
+    if (!destination || !eventDateRange) {
+      return alert("Campos obrigatórios");
+    }
     setIsGuestsInputOpen(true);
   }
 
@@ -103,7 +106,7 @@ export function CreateTrip() {
 
       navigate(`/trips/${tripId}`);
     } else {
-      return <LoadingPage />;
+      <LoadingPage />;
     }
   }
 
@@ -166,6 +169,8 @@ export function CreateTrip() {
           createTrip={createTrip}
           setOwnerData={setOwnerData}
           ownerData={ownerData}
+          destination={destination}
+          eventDateRange={eventDateRange}
         />
       )}
     </div>

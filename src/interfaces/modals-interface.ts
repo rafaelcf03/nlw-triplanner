@@ -20,6 +20,7 @@ export interface DatePickerModalProps {
   closeDatePickerModal: () => void;
   eventDateRange: DateRange | undefined;
   setEventDateRange: (dateRange: DateRange | undefined) => void;
+  submitDate: () => void;
 }
 
 export interface ConfirmTripModalProps {
@@ -27,4 +28,6 @@ export interface ConfirmTripModalProps {
   createTrip: (event: FormEvent<HTMLFormElement>) => void;
   setOwnerData: (data: { name: string; email: string }) => void;
   ownerData: { name: string; email: string };
+  destination: string | undefined;
+  eventDateRange: DateRange | undefined;
 }
